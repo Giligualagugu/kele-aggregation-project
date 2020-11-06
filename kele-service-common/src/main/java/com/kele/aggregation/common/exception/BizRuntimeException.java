@@ -1,7 +1,9 @@
 package com.kele.aggregation.common.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BizRuntimeException extends RuntimeException {
 
