@@ -1,0 +1,35 @@
+server:
+  port: 8003
+
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8000/eureka
+  instance:
+    prefer-ip-address: true
+
+
+spring:
+  application:
+    name: kele-service-gateway
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      routes:
+        - id: kele-service-provider
+          uri: lb://kele-service-provider
+          predicates:
+            - Path=/provider/**
+          filters:
+            - RewritePath=/provider(?<segment>/?.*), $\{segment}
+
+        - id: kele-service-comsummer
+          uri: lb://kele-service-comsummer
+          predicates:
+            - Path=/comsummer/**
+          filters:
+            - RewritePath=/comsummer(?<segment>/?.*), $\{segment}
