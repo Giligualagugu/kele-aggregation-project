@@ -1,6 +1,7 @@
 package com.kele.aggregation.common.config;
 
 import com.kele.aggregation.common.dto.KeleResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.MediaType;
@@ -8,13 +9,20 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@RestControllerAdvice
+
+/**
+ * 需自行注册处理 @RestControllerAdvice
+ */
+@Slf4j
 public class GlobalResponseWrapperConfig implements ResponseBodyAdvice<Object> {
 
     private static final Class<ResponseBody> CLASS_TYPE = ResponseBody.class;
+
+    public GlobalResponseWrapperConfig() {
+        log.info("**************** 配置 ResponseBody 包装对象");
+    }
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
