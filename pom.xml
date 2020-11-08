@@ -9,6 +9,7 @@
         <module>kele-service-comsummer</module>
         <module>kele-service-eureka</module>
         <module>kele-service-gateway</module>
+        <module>kele-service-authserver</module>
     </modules>
 
     <parent>

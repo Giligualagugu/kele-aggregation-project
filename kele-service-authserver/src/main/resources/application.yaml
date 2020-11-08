@@ -1,0 +1,13 @@
+server:
+  port: 8004
+
+spring:
+  application:
+    name: kele-service-authserver
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8000/eureka
+  instance:
+    prefer-ip-address: true

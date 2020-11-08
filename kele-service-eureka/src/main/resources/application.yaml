@@ -12,3 +12,10 @@ eureka:
 spring:
   application:
     name: kele-service-eureka
+
+  cloud:
+    loadbalancer:
+      cache:
+        ttl: 25s
+      ribbon:
+        enabled: false
