@@ -1,6 +1,7 @@
 package com.kele.aggregation.common.aspect;
 
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSON;
 import com.kele.aggregation.common.dto.KeleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,9 +12,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -38,35 +36,30 @@ public class RestControllerLogAspect {
     @Around("logPointCut()")
     public Object aroundlog(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+
         String requestURI = request.getRequestURI();
         Object[] args = joinPoint.getArgs();
         String requestId = IdUtil.fastSimpleUUID();
 
         log.info("Request start ==> request-trace-id=[{}], request_uri=[{}], request_args=[{}]", requestId, requestURI, tryToFormatInputParams(args));
+
         long t1 = System.currentTimeMillis();
 
         Object proceed = joinPoint.proceed(args);
+        String jsonResult = tryToFormatResponse(proceed);
 
         long t2 = System.currentTimeMillis();
 
-        log.info("Request finish ==> response-trace-id=[{}], spent_time=[{}ms], response_body=[{}]", requestId, t2 - t1, tryToFormatResponse(proceed));
+        log.info("Request finish ==> response-trace-id=[{}], spent_time=[{}ms], response_body=[{}]", requestId, t2 - t1, jsonResult);
 
         return proceed;
     }
 
-    private Object tryToFormatResponse(Object proceed) {
+    private String tryToFormatResponse(Object proceed) {
 
         if (isSerializableForJson(proceed)) {
-            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
-                objectOutputStream.writeObject(proceed);
-                objectOutputStream.flush();
-                final byte[] bytes = outputStream.toByteArray();
-                return bytes.length < 1024 ? new String(bytes) : "too long to print";
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+            final String jsonString = JSON.toJSONString(proceed);
+            return jsonString.length() < 256 ? jsonString : "too long to print";
         }
 
 
