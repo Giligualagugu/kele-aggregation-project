@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 /**
  * @author xujiale 2020/11/7 19:28
- *
+ * <p>
  * 获取token请求
  * http://localhost:8004/oauth/token?username=demo&password=demo123&grant_type=password&scope=all&client_id=client_1&client_secret=123456
  */
