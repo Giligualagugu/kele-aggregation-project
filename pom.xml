@@ -10,6 +10,8 @@
         <module>kele-service-eureka</module>
         <module>kele-service-gateway</module>
         <module>kele-service-authserver</module>
+        <module>kele-service-resource-server</module>
+        <module>kele-service-adminweb</module>
     </modules>
 
     <parent>

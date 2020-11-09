@@ -65,3 +65,9 @@ kele-service-gateway/target/maven-status/
 kele-service-provider/target/kele-service-provider-1.0-SNAPSHOT.jar.original
 kele-service-provider/target/maven-archiver/
 kele-service-provider/target/maven-status/
+kele-service-adminweb/src/test/
+kele-service-adminweb/target/classes/application.yaml
+kele-service-adminweb/target/generated-sources/
+kele-service-resource-server/src/test/
+kele-service-resource-server/target/classes/application.yaml
+kele-service-resource-server/target/generated-sources/

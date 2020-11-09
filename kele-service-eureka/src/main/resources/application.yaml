@@ -19,3 +19,12 @@ spring:
         ttl: 25s
       ribbon:
         enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS

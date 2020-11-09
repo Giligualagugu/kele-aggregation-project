@@ -1,30 +1,9 @@
-server:
-  port: 8002
-
-spring:
-  application:
-    name: kele-service-comsummer
-
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8000/eureka
   instance:
     prefer-ip-address: true
-
-feign:
-  client:
-    config:
-      default:
-        loggerLevel: full
-
-logging:
-  level:
-    com:
-      kele:
-        aggregation:
-          rpc: debug
-
 
 management:
   endpoints:
@@ -34,3 +13,10 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
+
+spring:
+  application:
+    name: kele-server-adminweb
+
+server:
+  port: 8006

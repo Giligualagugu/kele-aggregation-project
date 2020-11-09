@@ -1,9 +1,9 @@
 server:
-  port: 8002
+  port: 8005
 
 spring:
   application:
-    name: kele-service-comsummer
+    name: kele-service-resource-server
 
 eureka:
   client:
@@ -11,19 +11,6 @@ eureka:
       defaultZone: http://localhost:8000/eureka
   instance:
     prefer-ip-address: true
-
-feign:
-  client:
-    config:
-      default:
-        loggerLevel: full
-
-logging:
-  level:
-    com:
-      kele:
-        aggregation:
-          rpc: debug
 
 
 management:

@@ -1,6 +1,14 @@
 server:
   port: 8003
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
 
 
 eureka:
@@ -34,3 +42,10 @@ spring:
             - Path=/comsummer/**
           filters:
             - RewritePath=/comsummer(?<segment>/?.*), $\{segment}
+
+        - id: kele-service-resource-server
+          uri: lb://kele-service-resource-server
+          predicates:
+            - Path=/resource/**
+          filters:
+            - RewritePath=/resource(?<segment>/?.*), $\{segment}
