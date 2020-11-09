@@ -21,4 +21,10 @@ public class TestController {
     public Object getRpc() {
         return test();
     }
+
+
+    @GetMapping("/inner/test")
+    public String testInner() {
+        return "heheda  卧槽";
+    }
 }
