@@ -34,6 +34,10 @@ public class GlobalResponseWrapperConfig implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
 
+        if (o == null) {
+            return KeleResult.success(null);
+        }
+
         // 处理 String 返回值;
         if (o instanceof String) {
             serverHttpResponse.getHeaders().setContentType(MediaType.APPLICATION_JSON);
