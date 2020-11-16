@@ -19,7 +19,7 @@ public class CustomTextWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 
-        log.info("链接关闭...");
+        log.info("链接关闭...{},{}", status.getCode(), status.getReason());
         sessionStorage.removeWebSocketSession(session.getId());
     }
 
@@ -33,7 +33,6 @@ public class CustomTextWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         log.info("处理信息...{}", message.getPayload());
-        System.out.println(session.getPrincipal());
 
     }
 
