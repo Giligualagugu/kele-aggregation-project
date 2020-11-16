@@ -20,20 +20,22 @@ public class WsContoller {
     @Autowired
     MessageSender messageSender;
 
+    /**
+     * 推送信息到客户端;
+     */
     @PostMapping("/ws/message")
     public KeleResult<Object> sendToUser(@RequestBody MessageDTO message) {
-
         sessionStorage.tellOtherInstances(message);
-
         return KeleResult.success(null);
     }
 
 
+    /**
+     * 内部接受广播...
+     */
     @PostMapping("/inner/message")
     public KeleResult<Object> sendToUserClient(@RequestBody MessageDTO messageDTO) throws IOException {
-
         messageSender.sendToUserClient(messageDTO);
-
         return KeleResult.success(null);
     }
 

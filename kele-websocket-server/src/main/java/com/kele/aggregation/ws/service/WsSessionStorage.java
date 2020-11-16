@@ -9,18 +9,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
 public class WsSessionStorage {
-    private RestTemplate restTemplate = new RestTemplate();
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Autowired
     EurekaClient eurekaClient;
@@ -34,12 +39,20 @@ public class WsSessionStorage {
         return sessionCache.get(key);
     }
 
-    public void setWebSocketSession(String key, WebSocketSession webSocketSession) {
-        sessionCache.put(key, webSocketSession);
+    public void setWebSocketSession(WebSocketSession webSocketSession) throws IOException {
+        // 保持客户端和服务端只有一个 websocket 链接;
+        String key = Objects.requireNonNull(webSocketSession.getPrincipal()).getName();
+        if (sessionCache.containsKey(key) && sessionCache.get(key).isOpen() && webSocketSession.isOpen()) {
+            webSocketSession.close();
+        } else {
+            sessionCache.put(key, webSocketSession);
+        }
+
+
     }
 
-    public void removeWebSocketSession(String key) {
-        sessionCache.remove(key);
+    public void removeWebSocketSession(WebSocketSession session) {
+        sessionCache.remove(Objects.requireNonNull(session.getPrincipal()).getName());
     }
 
 
@@ -55,7 +68,9 @@ public class WsSessionStorage {
             String host = "http://" + e.getIPAddr() + ":" + e.getPort();
 
             try {
-                HttpEntity<MessageDTO> httpEntity = new HttpEntity<>(message);
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<MessageDTO> httpEntity = new HttpEntity<>(message, httpHeaders);
                 restTemplate.postForEntity(host, httpEntity, KeleResult.class);
             } catch (Exception exception) {
                 log.warn("通知失败...", exception);

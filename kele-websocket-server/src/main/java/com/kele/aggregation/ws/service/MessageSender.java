@@ -1,5 +1,6 @@
 package com.kele.aggregation.ws.service;
 
+import com.alibaba.fastjson.JSON;
 import com.kele.aggregation.ws.dto.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -19,19 +20,12 @@ public class MessageSender {
 
     @Async
     public void sendToUserClient(MessageDTO messageDTO) throws IOException {
-        String key = getSessionIdByUser(messageDTO.getUser());
-
-        WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(key);
-
-        TextMessage textMessage = new TextMessage(messageDTO.getMessage());
-
-        webSocketSession.sendMessage(textMessage);
+        WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(messageDTO.getUserId());
+        if (webSocketSession != null && webSocketSession.isOpen()) {
+            TextMessage textMessage = new TextMessage(JSON.toJSONString(messageDTO));
+            webSocketSession.sendMessage(textMessage);
+        }
 
     }
 
-    private String getSessionIdByUser(String user) {
-        // todo 处理 user和 sessionId 的缓存关系; 使用全局存储, mysql 或者 redis等;
-
-        return null;
-    }
 }

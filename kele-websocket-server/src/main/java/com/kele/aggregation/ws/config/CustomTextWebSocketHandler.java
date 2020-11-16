@@ -9,6 +9,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Slf4j
 @Component
 public class CustomTextWebSocketHandler extends TextWebSocketHandler {
@@ -20,13 +23,13 @@ public class CustomTextWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 
         log.info("链接关闭...{},{}", status.getCode(), status.getReason());
-        sessionStorage.removeWebSocketSession(session.getId());
+        sessionStorage.removeWebSocketSession(session);
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("链接建立...");
-        sessionStorage.setWebSocketSession(session.getId(), session);
+        sessionStorage.setWebSocketSession( session);
 
     }
 
@@ -39,7 +42,8 @@ public class CustomTextWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         log.warn("传输过程错误....{}", exception.getMessage());
-        sessionStorage.removeWebSocketSession(session.getId());
+        if (session.isOpen()) session.close();
+        sessionStorage.removeWebSocketSession(session);
 
     }
 }
