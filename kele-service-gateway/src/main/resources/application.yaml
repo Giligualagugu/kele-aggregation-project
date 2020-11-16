@@ -1,6 +1,9 @@
 server:
   port: 8003
-
+  compression:
+    enabled: true
+  http2:
+    enabled: true
 management:
   endpoints:
     web:
@@ -24,6 +27,7 @@ spring:
   application:
     name: kele-service-gateway
   cloud:
+
     loadbalancer:
       ribbon:
         enabled: false
@@ -49,3 +53,11 @@ spring:
             - Path=/resource/**
           filters:
             - RewritePath=/resource(?<segment>/?.*), $\{segment}
+
+        #转发websocket 请求
+        - id: kele-websocket-server
+          uri: lb:ws://kele-websocket-server
+          predicates:
+            - Path=/ws/**
+          filters:
+            - RewritePath=/ws(?<segment>/?.*), $\{segment}

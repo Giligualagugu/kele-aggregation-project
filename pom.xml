@@ -12,6 +12,7 @@
         <module>kele-service-authserver</module>
         <module>kele-service-resource-server</module>
         <module>kele-service-adminweb</module>
+        <module>kele-websocket-server</module>
     </modules>
 
     <parent>
