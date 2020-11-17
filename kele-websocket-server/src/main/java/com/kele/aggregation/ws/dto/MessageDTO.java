@@ -33,7 +33,7 @@ public class MessageDTO {
     /**
      * 内容
      */
-    private String conent;
+    private String content;
     /**
      * 网页路由
      */

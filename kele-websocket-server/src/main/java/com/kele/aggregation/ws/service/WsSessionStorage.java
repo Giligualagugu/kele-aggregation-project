@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketSession;
@@ -67,14 +68,15 @@ public class WsSessionStorage {
     private void sendToOtherInstances(InstanceInfo e, MessageDTO message) {
         if (e.getStatus() == InstanceInfo.InstanceStatus.UP) {
             // 发送消息;
-            String host = "http://" + e.getIPAddr() + ":" + e.getPort();
-
             CompletableFuture.runAsync(() -> {
                 try {
+                    String host = "http://" + e.getIPAddr() + ":" + e.getPort() + "/inner/message";
+                    log.info("发送域名:{}", host);
                     HttpHeaders httpHeaders = new HttpHeaders();
                     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                     HttpEntity<MessageDTO> httpEntity = new HttpEntity<>(message, httpHeaders);
-                    restTemplate.postForEntity(host, httpEntity, KeleResult.class);
+                    ResponseEntity<KeleResult> keleResultResponseEntity = restTemplate.postForEntity(host, httpEntity, KeleResult.class);
+                    log.info("通知结果:{}", keleResultResponseEntity.getStatusCodeValue());
                 } catch (Exception exception) {
                     log.warn("通知失败...", exception);
                 }

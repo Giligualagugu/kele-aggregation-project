@@ -32,6 +32,8 @@ public class WsContoller {
 
     /**
      * 内部接受广播...
+     * <p>
+     * 有可靠性MQ 可以用MQ替代;
      */
     @PostMapping("/inner/message")
     public KeleResult<Object> sendToUserClient(@RequestBody MessageDTO messageDTO) throws IOException {
