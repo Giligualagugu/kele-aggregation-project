@@ -1,6 +1,7 @@
 package com.kele.aggregation.ws.service;
 
 import com.kele.aggregation.common.dto.KeleResult;
+import com.kele.aggregation.ws.constant.BizGlobalConstants;
 import com.kele.aggregation.ws.dto.MessageDTO;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
@@ -8,6 +9,7 @@ import com.netflix.discovery.shared.Application;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,7 +21,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,30 +33,62 @@ public class WsSessionStorage {
     @Autowired
     EurekaClient eurekaClient;
 
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
+
     @Value("${spring.application.name}")
     private String applicationName;
 
     private static final Map<String, WebSocketSession> sessionCache = new ConcurrentHashMap<>(128);
 
-    public WebSocketSession getWebSocketSession(String key) {
+    public WebSocketSession getWebSocketSession(Object key) {
         return sessionCache.get(key);
     }
 
+    /**
+     * 很沙雕的问题... 第二个WebSocketSession 进来后, 找到 第一个WebSocketSession 调用close()方法尝试关闭... 结果把第二个WebSocketSession 也给关了...
+     * <p>
+     * 所以改变策略, 存在打开的WebSocketSession, 不让第二个WebSocketSession建立
+     */
     public void setWebSocketSession(WebSocketSession webSocketSession) throws IOException {
-        // 保持客户端和 当前服务端实例只有一个 websocket 链接;
-        // 走网关的话 客户端建立多个链接 分布到不同的实例上...
-        String key = Objects.requireNonNull(webSocketSession.getPrincipal()).getName();
-        if (sessionCache.containsKey(key) && sessionCache.get(key).isOpen() && webSocketSession.isOpen()) {
-            webSocketSession.close();
-        } else {
-            sessionCache.put(key, webSocketSession);
-        }
-
+        // 链接建立后 移除同页面的上一个链接;
+        String pageId = (String) webSocketSession.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
+        String userId = webSocketSession.getPrincipal().getName();
+        // 缓存新的链接;
+        log.info("缓存新链接:{}", webSocketSession.getId());
+        sessionCache.put(webSocketSession.getId(), webSocketSession);
+        // 缓存新的sessionId;
+        stringRedisTemplate.opsForHash().put(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId, webSocketSession.getId());
 
     }
 
+
     public void removeWebSocketSession(WebSocketSession session) {
-        sessionCache.remove(Objects.requireNonNull(session.getPrincipal()).getName());
+        if (session == null) {
+            return;
+        }
+
+        String pageId = (String) session.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
+        String userId = session.getPrincipal().getName();
+        sessionCache.remove(session.getId());
+        stringRedisTemplate.opsForHash().delete(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId);
+    }
+
+    public WebSocketSession removeWebSocketSession(String sessionId) {
+        return sessionCache.remove(sessionId);
+    }
+
+    /**
+     * true= 用户username 在页面 pageid 的websocket链接已存在;
+     */
+    public boolean checkWebscoketSessionExist(String username, String pageid) {
+        Boolean aBoolean = stringRedisTemplate.opsForHash().hasKey(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageid);
+        return Boolean.TRUE.equals(aBoolean);
+    }
+
+    public String getStoreWebsocketSessionId(String username, String pageId) {
+        return (String) stringRedisTemplate.opsForHash().get(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageId);
     }
 
 

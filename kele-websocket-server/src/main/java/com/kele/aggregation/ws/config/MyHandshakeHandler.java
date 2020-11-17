@@ -20,7 +20,6 @@ public class MyHandshakeHandler extends DefaultHandshakeHandler {
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
         log.info("这里构建 Principal ....");
         log.info("attributes={}", attributes);
-        Principal principal = request.getPrincipal();
         return super.determineUser(request, wsHandler, attributes);
     }
 }

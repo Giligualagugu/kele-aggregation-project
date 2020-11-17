@@ -2,7 +2,7 @@ package com.kele.aggregation.ws.controller;
 
 import com.kele.aggregation.common.dto.KeleResult;
 import com.kele.aggregation.ws.dto.MessageDTO;
-import com.kele.aggregation.ws.service.MessageSender;
+import com.kele.aggregation.ws.service.WebSocketMessageSender;
 import com.kele.aggregation.ws.service.WsSessionStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +18,7 @@ public class WsContoller {
     WsSessionStorage sessionStorage;
 
     @Autowired
-    MessageSender messageSender;
+    WebSocketMessageSender webSocketMessageSender;
 
     /**
      * 推送信息到客户端;
@@ -37,7 +37,7 @@ public class WsContoller {
      */
     @PostMapping("/inner/message")
     public KeleResult<Object> sendToUserClient(@RequestBody MessageDTO messageDTO) throws IOException {
-        messageSender.sendToUserClient(messageDTO);
+        webSocketMessageSender.sendToUserClient(messageDTO);
         return KeleResult.success(null);
     }
 

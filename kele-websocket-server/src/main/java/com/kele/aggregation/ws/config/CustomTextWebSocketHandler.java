@@ -9,9 +9,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Slf4j
 @Component
 public class CustomTextWebSocketHandler extends TextWebSocketHandler {
@@ -22,28 +19,29 @@ public class CustomTextWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 
-        log.info("链接关闭...{},{}", status.getCode(), status.getReason());
+        log.info("链接关闭...{},{},{}", status.getCode(), status.getReason(), session.getId());
         sessionStorage.removeWebSocketSession(session);
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("链接建立...");
-        sessionStorage.setWebSocketSession( session);
-
+        sessionStorage.setWebSocketSession(session);
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        log.info("处理信息...{}", message.getPayload());
+        log.info("处理信息...{}={}", session.getId(), message.getPayload());
 
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        log.warn("传输过程错误....{}", exception.getMessage());
-        if (session.isOpen()) session.close();
+        log.warn("传输过程错误....{},{}", exception.getMessage(), session.getId());
         sessionStorage.removeWebSocketSession(session);
-
+        if (session.isOpen()) {
+            // 这里会触发 afterConnectionClosed();
+            session.close();
+        }
     }
 }
