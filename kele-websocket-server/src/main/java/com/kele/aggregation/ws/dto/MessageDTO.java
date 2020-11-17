@@ -1,5 +1,6 @@
 package com.kele.aggregation.ws.dto;
 
+import cn.hutool.core.util.IdUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,11 @@ public class MessageDTO {
      * 用户id
      */
     private String userId;
+
+    /**
+     * 此条消息id;
+     */
+    private String messageId = IdUtil.fastSimpleUUID();
 
     /**
      * 主标题

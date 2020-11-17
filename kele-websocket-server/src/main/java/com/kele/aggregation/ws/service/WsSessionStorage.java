@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -40,7 +41,8 @@ public class WsSessionStorage {
     }
 
     public void setWebSocketSession(WebSocketSession webSocketSession) throws IOException {
-        // 保持客户端和服务端只有一个 websocket 链接;
+        // 保持客户端和 当前服务端实例只有一个 websocket 链接;
+        // 走网关的话 客户端建立多个链接 分布到不同的实例上...
         String key = Objects.requireNonNull(webSocketSession.getPrincipal()).getName();
         if (sessionCache.containsKey(key) && sessionCache.get(key).isOpen() && webSocketSession.isOpen()) {
             webSocketSession.close();
@@ -67,14 +69,17 @@ public class WsSessionStorage {
             // 发送消息;
             String host = "http://" + e.getIPAddr() + ":" + e.getPort();
 
-            try {
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<MessageDTO> httpEntity = new HttpEntity<>(message, httpHeaders);
-                restTemplate.postForEntity(host, httpEntity, KeleResult.class);
-            } catch (Exception exception) {
-                log.warn("通知失败...", exception);
-            }
+            CompletableFuture.runAsync(() -> {
+                try {
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<MessageDTO> httpEntity = new HttpEntity<>(message, httpHeaders);
+                    restTemplate.postForEntity(host, httpEntity, KeleResult.class);
+                } catch (Exception exception) {
+                    log.warn("通知失败...", exception);
+                }
+            });
+
 
         }
 
