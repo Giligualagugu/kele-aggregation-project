@@ -21,6 +21,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,12 +60,13 @@ public class WsSessionStorage {
         log.info("缓存新链接:{}", webSocketSession.getId());
         sessionCache.put(webSocketSession.getId(), webSocketSession);
         // 缓存新的sessionId;
-        stringRedisTemplate.opsForHash().put(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId, webSocketSession.getId());
-
+//        stringRedisTemplate.opsForHash().put(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId, webSocketSession.getId());
+        stringRedisTemplate.opsForSet().add(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId + ":" + pageId, webSocketSession.getId());
     }
 
 
     public void removeWebSocketSession(WebSocketSession session) {
+
         if (session == null) {
             return;
         }
@@ -72,23 +74,19 @@ public class WsSessionStorage {
         String pageId = (String) session.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
         String userId = session.getPrincipal().getName();
         sessionCache.remove(session.getId());
-        stringRedisTemplate.opsForHash().delete(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId);
+//        stringRedisTemplate.opsForHash().delete(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId);
+        stringRedisTemplate.opsForSet().remove(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId + ":" + pageId, session.getId());
+
     }
 
     public WebSocketSession removeWebSocketSession(String sessionId) {
         return sessionCache.remove(sessionId);
     }
 
-    /**
-     * true= 用户username 在页面 pageid 的websocket链接已存在;
-     */
-    public boolean checkWebscoketSessionExist(String username, String pageid) {
-        Boolean aBoolean = stringRedisTemplate.opsForHash().hasKey(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageid);
-        return Boolean.TRUE.equals(aBoolean);
-    }
+    public Set<String> getStoreWebsocketSessionId(String username, String pageId) {
+//        return (String) stringRedisTemplate.opsForHash().get(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageId);
 
-    public String getStoreWebsocketSessionId(String username, String pageId) {
-        return (String) stringRedisTemplate.opsForHash().get(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageId);
+        return stringRedisTemplate.opsForSet().members(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username + ":" + pageId);
     }
 
 

@@ -4,6 +4,7 @@ import com.kele.aggregation.ws.constant.BizGlobalConstants;
 import com.kele.aggregation.ws.service.WsSessionStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.server.ServerHttpRequest;
@@ -11,10 +12,12 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -35,27 +38,26 @@ public class MyHandshakeInterceptor implements HandshakeInterceptor {
         String username = Objects.requireNonNull(serverHttpRequest.getPrincipal()).getName();
         ServletServerHttpRequest request = (ServletServerHttpRequest) serverHttpRequest;
         String puuid = request.getServletRequest().getParameter("puuid");
+        map.put(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID, puuid);
 
         if (StringUtils.isEmpty(puuid)) {
             return false;
         }
 
-        String existSessionId = sessionStorage.getStoreWebsocketSessionId(username, puuid);
-        if (StringUtils.isNotEmpty(existSessionId)) {
+        Set<String> existSessionIdSet = sessionStorage.getStoreWebsocketSessionId(username, puuid);
+        if (ObjectUtils.isNotEmpty(existSessionIdSet)) {
             /*
-                理论上 session关闭一定会触发 afterConnectionClosed();
-                然后删除 缓存的 sessionId, 所以 sessionId 存在则 WebSocketSession 一定存在;
-                但是WebSocketSession 不一定在当前实例中;  我们默认他是open的;
-
+                当前实例 存在 该用户 pageId的 ws session 返回false;
              */
-            return false;
-//            WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(existSessionId);
-//            if (webSocketSession != null && webSocketSession.isOpen()) {
-//                return false;
-//            }
+
+            return !existSessionIdSet.stream().anyMatch(e -> {
+                WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(e);
+                return webSocketSession != null && webSocketSession.isOpen();
+            });
+
+
         }
 
-        map.put(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID, puuid);
 
         return true;
     }
