@@ -43,11 +43,12 @@ public class MyHandshakeInterceptor implements HandshakeInterceptor {
             /*
                 当前实例 存在 该用户 pageId的 ws session 返回false;
              */
-        WebSocketSession socketSession = sessionStorage.getWebSocketSession(username);
+        Map<String, WebSocketSession> socketSession = sessionStorage.getWebSocketSession(username);
 
         if (ObjectUtils.isNotEmpty(socketSession)) {
-            Object pageId = socketSession.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
-            if (puuid.equals(pageId)) {
+            WebSocketSession webSocketSession = socketSession.get(puuid);
+            if (webSocketSession != null) {
+                log.warn("当前page 已存在 websocket链接");
                 return false;
             }
         }

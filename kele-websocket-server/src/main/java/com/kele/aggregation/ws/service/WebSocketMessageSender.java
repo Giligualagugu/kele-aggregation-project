@@ -13,6 +13,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -29,7 +30,11 @@ public class WebSocketMessageSender {
     RedissonClient redissonClient;
 
     public void sendToUserClient(MessageDTO messageDTO) {
-        WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(messageDTO.getUserId());
+        Map<String, WebSocketSession> webSocketSessionMap = sessionStorage.getWebSocketSession(messageDTO.getUserId());
+        webSocketSessionMap.values().forEach(e -> handlePushMessage(e, messageDTO));
+    }
+
+    private void handlePushMessage(WebSocketSession webSocketSession, MessageDTO messageDTO) {
         if (webSocketSession != null && webSocketSession.isOpen()) {
             // 消息id+ pageId 組合加锁, 保证用户在同一个页面收到的消息不重复;
             String globalKey = messageDTO.getMessageId() + ":" + webSocketSession.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
@@ -49,8 +54,6 @@ public class WebSocketMessageSender {
             }
             // 这里finally 不能主动释放锁, 等待自动释放即可, 提前主动释放 可能让其他实例的线程拿到锁,然后重复执行;
         }
-
-
     }
 
 
