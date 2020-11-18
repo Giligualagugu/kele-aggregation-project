@@ -1,7 +1,6 @@
 package com.kele.aggregation.ws.service;
 
 import com.kele.aggregation.common.dto.KeleResult;
-import com.kele.aggregation.ws.constant.BizGlobalConstants;
 import com.kele.aggregation.ws.dto.MessageDTO;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
@@ -9,7 +8,6 @@ import com.netflix.discovery.shared.Application;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,7 +19,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,9 +30,6 @@ public class WsSessionStorage {
 
     @Autowired
     EurekaClient eurekaClient;
-
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
 
 
     @Value("${spring.application.name}")
@@ -54,14 +48,10 @@ public class WsSessionStorage {
      */
     public void setWebSocketSession(WebSocketSession webSocketSession) throws IOException {
         // 链接建立后 移除同页面的上一个链接;
-        String pageId = (String) webSocketSession.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
         String userId = webSocketSession.getPrincipal().getName();
         // 缓存新的链接;
         log.info("缓存新链接:{}", webSocketSession.getId());
-        sessionCache.put(webSocketSession.getId(), webSocketSession);
-        // 缓存新的sessionId;
-//        stringRedisTemplate.opsForHash().put(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId, webSocketSession.getId());
-        stringRedisTemplate.opsForSet().add(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId + ":" + pageId, webSocketSession.getId());
+        sessionCache.put(userId, webSocketSession);
     }
 
 
@@ -70,23 +60,9 @@ public class WsSessionStorage {
         if (session == null) {
             return;
         }
-
-        String pageId = (String) session.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
         String userId = session.getPrincipal().getName();
-        sessionCache.remove(session.getId());
-//        stringRedisTemplate.opsForHash().delete(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId, pageId);
-        stringRedisTemplate.opsForSet().remove(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + userId + ":" + pageId, session.getId());
+        sessionCache.remove(userId);
 
-    }
-
-    public WebSocketSession removeWebSocketSession(String sessionId) {
-        return sessionCache.remove(sessionId);
-    }
-
-    public Set<String> getStoreWebsocketSessionId(String username, String pageId) {
-//        return (String) stringRedisTemplate.opsForHash().get(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username, pageId);
-
-        return stringRedisTemplate.opsForSet().members(BizGlobalConstants.WEBSOCKET_SESSION_PREFIX + username + ":" + pageId);
     }
 
 

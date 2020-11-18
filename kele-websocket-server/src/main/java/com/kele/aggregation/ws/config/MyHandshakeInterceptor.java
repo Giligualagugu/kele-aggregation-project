@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -17,14 +16,11 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @Slf4j
 @Component
 public class MyHandshakeInterceptor implements HandshakeInterceptor {
 
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     WsSessionStorage sessionStorage;
@@ -44,20 +40,17 @@ public class MyHandshakeInterceptor implements HandshakeInterceptor {
             return false;
         }
 
-        Set<String> existSessionIdSet = sessionStorage.getStoreWebsocketSessionId(username, puuid);
-        if (ObjectUtils.isNotEmpty(existSessionIdSet)) {
             /*
                 当前实例 存在 该用户 pageId的 ws session 返回false;
              */
+        WebSocketSession socketSession = sessionStorage.getWebSocketSession(username);
 
-            return !existSessionIdSet.stream().anyMatch(e -> {
-                WebSocketSession webSocketSession = sessionStorage.getWebSocketSession(e);
-                return webSocketSession != null && webSocketSession.isOpen();
-            });
-
-
+        if (ObjectUtils.isNotEmpty(socketSession)) {
+            Object pageId = socketSession.getAttributes().get(BizGlobalConstants.WEBSOCKET_USER_PAGE_UUID);
+            if (puuid.equals(pageId)) {
+                return false;
+            }
         }
-
 
         return true;
     }
