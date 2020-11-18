@@ -19,6 +19,11 @@ public class MessageDTO {
     private String userId;
 
     /**
+     * 时间戳;
+     */
+    private long timestamp = System.currentTimeMillis();
+
+    /**
      * 此条消息id;
      */
     private String messageId = IdUtil.fastSimpleUUID();
