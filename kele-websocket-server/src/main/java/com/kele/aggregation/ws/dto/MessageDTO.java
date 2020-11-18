@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -47,5 +48,10 @@ public class MessageDTO {
      * 图片链接集合;
      */
     private List<String> picUrls;
+
+    /**
+     * 自定义参数;
+     */
+    private Map<String, Object> custom;
 
 }
