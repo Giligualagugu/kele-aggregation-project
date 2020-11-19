@@ -113,3 +113,12 @@ kele-service-eureka/.gradle/
 kele-service-eureka/gradle/wrapper/gradle-wrapper.properties
 kele-service-eureka/gradlew
 kele-service-eureka/gradlew.bat
+kele-websockt-borker/src/test/
+kele-websockt-borker/target/classes/application.yaml
+kele-websockt-borker/target/classes/statics/
+kele-websockt-borker/target/generated-sources/
+kele-websockt-borker/target/generated-test-sources/
+kele-websockt-borker/target/kele-websockt-borker-1.0-SNAPSHOT.jar.original
+kele-websockt-borker/target/maven-archiver/
+kele-websockt-borker/target/maven-status/
+kele-websockt-borker/target/test-classes/
