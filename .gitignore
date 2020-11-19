@@ -97,3 +97,15 @@ kele-websocket-server/target/kele-websocket-server-1.0-SNAPSHOT.jar.original
 kele-websocket-server/target/maven-archiver/
 kele-websocket-server/target/maven-status/
 kele-websocket-server/target/test-classes/
+.gradle/6.7.1/vcsMetadata-1/
+buildSrc/.gradle/
+buildSrc/build/generated/
+buildSrc/build/groovy-dsl-plugins/output/adapter-src/
+buildSrc/build/groovy-dsl-plugins/plugin-requests/com.kele.aggregation.java-conventions/metadata.bin
+buildSrc/build/groovy-dsl-plugins/work/metadata/
+buildSrc/build/pluginDescriptors/
+buildSrc/build/pluginUnderTestMetadata/
+buildSrc/build/reports/
+buildSrc/build/resources/
+buildSrc/build/source-roots/
+buildSrc/build/tmp/
