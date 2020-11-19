@@ -14,16 +14,20 @@
     <button onclick="connect()">链接</button>
     <button onclick="subscribeSocket()">订阅</button>
     <button onclick="disconnect()">断开</button>
+    <button onclick="sendMessageNoParameter()">发送到服务器</button>
 
     <script type="text/javascript">
         // 设置 STOMP 客户端
         var stompClient = null;
         // 设置 WebSocket 进入端点
-        var SOCKET_ENDPOINT = "http://localhost:8008/ws1?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2xpZW50XzFfcmVzb3VyY2UiXSwidXNlcl9uYW1lIjoiZGVtbyIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2MDYxOTY0MzIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiIwY2M3MTUyOS0zMGI3LTQxYTYtYjhlYi1jOWI1M2Q5NWUzYjMiLCJjbGllbnRfaWQiOiJjbGllbnRfMSJ9.h7rTKsmLnWr9d9lKUn1t1XZAfkJ3TKDxLvlhFyh6KkI";
+        var SOCKET_ENDPOINT = "http://localhost:8003/wsbroker/ws1?access_token=" +
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2xpZW50XzFfcmVzb3VyY2UiXSwidXNlcl9uYW1lIjoiZGVtbyIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2MDYxOTY0MzIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiIwY2M3MTUyOS0zMGI3LTQxYTYtYjhlYi1jOWI1M2Q5NWUzYjMiLCJjbGllbnRfaWQiOiJjbGllbnRfMSJ9.h7rTKsmLnWr9d9lKUn1t1XZAfkJ3TKDxLvlhFyh6KkI";
         // 设置订阅消息的请求前缀
         var SUBSCRIBE_PREFIX = "/user/topic";
         // 设置订阅消息的请求地址
         var SUBSCRIBE = "";
+
+        var SEND_ENDPOINT = "/app/read";
 
         /* 进行连接 */
         function connect() {
@@ -65,6 +69,13 @@
                 alert("断开连接");
                 console.log(stompClient);
             });
+        }
+
+        function sendMessageNoParameter() {
+            // 设置待发送的消息内容
+            var message = '{"targetUser":"' + 'kele' + '", "destination": "' + SUBSCRIBE + '", "content": "' + "我是内容" + '"}';
+            // 发送消息
+            stompClient.send(SEND_ENDPOINT, {}, message);
         }
     </script>
 

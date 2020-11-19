@@ -61,3 +61,9 @@ spring:
             - Path=/ws/**
           filters:
             - RewritePath=/ws(?<segment>/?.*), $\{segment}
+        - id: kele-websocket-broker
+          uri: lb:ws://kele-websocket-broker
+          predicates:
+            - Path=/wsbroker/**
+          filters:
+            - RewritePath=/wsbroker(?<segment>/?.*), $\{segment}

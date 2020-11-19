@@ -96,7 +96,7 @@ kele-websocket-server/target/generated-test-sources/
 kele-websocket-server/target/kele-websocket-server-1.0-SNAPSHOT.jar.original
 kele-websocket-server/target/maven-archiver/
 kele-websocket-server/target/maven-status/
-kele-websocket-server/target/test-classes/
+kele-websocket-server/target/
 .gradle/
 buildSrc/.gradle/
 buildSrc/build/generated/
@@ -114,11 +114,4 @@ kele-service-eureka/gradle/wrapper/gradle-wrapper.properties
 kele-service-eureka/gradlew
 kele-service-eureka/gradlew.bat
 kele-websockt-borker/src/test/
-kele-websockt-borker/target/classes/application.yaml
-kele-websockt-borker/target/classes/statics/
-kele-websockt-borker/target/generated-sources/
-kele-websockt-borker/target/generated-test-sources/
-kele-websockt-borker/target/kele-websockt-borker-1.0-SNAPSHOT.jar.original
-kele-websockt-borker/target/maven-archiver/
-kele-websockt-borker/target/maven-status/
-kele-websockt-borker/target/test-classes/
+kele-websockt-borker/target/
