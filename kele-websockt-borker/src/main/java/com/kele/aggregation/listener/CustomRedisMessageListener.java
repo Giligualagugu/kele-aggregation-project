@@ -1,6 +1,5 @@
 package com.kele.aggregation.listener;
 
-import com.alibaba.fastjson.JSON;
 import com.kele.aggregation.dto.MessageBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,10 @@ public class CustomRedisMessageListener {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
-    public void handleSubscribeTopicMessage(String msg) {
+    public void handleSubscribeTopicMessage(MessageBody messageBody) {
         log.info("收到异步消息请求, 发送....");
 
-        MessageBody messageBody = JSON.parseObject(msg, MessageBody.class);
+//        MessageBody messageBody = JSON.parseObject(msg, MessageBody.class);
 
         simpMessagingTemplate.convertAndSendToUser(messageBody.getTargetUser(), messageBody.getDestination(), messageBody);
     }

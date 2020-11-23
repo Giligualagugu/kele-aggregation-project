@@ -1,5 +1,7 @@
 package com.kele.aggregation.config;
 
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+import com.kele.aggregation.dto.MessageBody;
 import com.kele.aggregation.listener.CustomRedisMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,9 @@ public class RedisMqConfig {
 
     @Bean
     public MessageListenerAdapter messageListenerAdapter() {
-        return new MessageListenerAdapter(customRedisMessageListener, "handleSubscribeTopicMessage");
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(customRedisMessageListener, "handleSubscribeTopicMessage");
+        messageListenerAdapter.setSerializer(new FastJsonRedisSerializer<>(MessageBody.class));
+        return messageListenerAdapter;
     }
 
     @Bean
