@@ -12,6 +12,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.LinkedHashMap;
+
 
 /**
  * 需自行注册处理 @RestControllerAdvice
@@ -59,6 +61,17 @@ public class GlobalResponseWrapperConfig implements ResponseBodyAdvice<Object> {
              */
 
             return o;
+        }
+
+        // 接上文, 如果不强制转换 可以在这里判断下 LinkedHashMap的外层结构和keleResult是不是一致, 一致则直接返回,否则包装进新的 keleresult
+        if (o instanceof LinkedHashMap) {
+            LinkedHashMap map = (LinkedHashMap) o;
+            if (map.containsKey("code") && map.containsKey("message") && map.containsKey("result")) {
+                return map;
+            } else {
+                return KeleResult.success(map);
+            }
+
         }
 
 
