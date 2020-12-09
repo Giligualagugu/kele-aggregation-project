@@ -13,7 +13,7 @@
         <module>kele-service-resource-server</module>
         <module>kele-service-adminweb</module>
         <module>kele-websocket-server</module>
-        <module>kele-websockt-borker</module>
+        <module>kele-websocket-borker</module>
     </modules>
 
     <parent>
