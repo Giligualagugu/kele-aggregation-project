@@ -120,4 +120,7 @@ target/generated-sources/
 kele-service-consul-demo/src/test/
 kele-service-consul-demo/target/
 kele-websocket-borker/target/generated-sources/
-.gitignore
+
+kele-websocket-borker/target/kele-websocket-borker-1.0-SNAPSHOT.jar.original
+kele-websocket-borker/target/maven-archiver/
+kele-websocket-borker/target/maven-status/
