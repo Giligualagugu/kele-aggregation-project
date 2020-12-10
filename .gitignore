@@ -115,9 +115,9 @@ kele-service-eureka/gradlew
 kele-service-eureka/gradlew.bat
 kele-websockt-borker/src/test/
 kele-websockt-borker/target/
-.gitignore
 src/test/
 target/generated-sources/
 kele-service-consul-demo/src/test/
 kele-service-consul-demo/target/
 kele-websocket-borker/target/generated-sources/
+.gitignore
