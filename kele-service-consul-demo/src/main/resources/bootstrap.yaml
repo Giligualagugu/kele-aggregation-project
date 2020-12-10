@@ -10,3 +10,5 @@ spring:
       discovery:
         prefer-ip-address: true
         service-name: ${spring.application.name}
+      config:
+        format: yaml
