@@ -2,7 +2,7 @@ package com.kele.aggregation.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.kele.aggregation.controller.TestController;
+import com.kele.aggregation.PreHandleRequestBody;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -23,7 +23,7 @@ public class CustomRequestBodyConfig implements RequestBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return methodParameter.getContainingClass().isAssignableFrom(TestController.class);
+        return methodParameter.hasMethodAnnotation(PreHandleRequestBody.class);
     }
 
     @Override

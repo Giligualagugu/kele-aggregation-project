@@ -1,6 +1,7 @@
 package com.kele.aggregation.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.kele.aggregation.PreHandleRequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ public class TestController {
     }
 
 
+    @PreHandleRequestBody
     @PostMapping("/test/body")
     public Object testbody(@RequestBody Object o) {
         System.out.println("body=" + JSON.toJSONString(o, true));
