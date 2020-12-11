@@ -15,8 +15,6 @@ public class GsEmployeeEntity extends BaseEntity {
 
     private static final long serialVersionUID = 7585249387350059136L;
 
-
-
     /**
      * 归属的公司id, 外键;  外键字段不可手动修改;
      */

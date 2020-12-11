@@ -25,11 +25,11 @@ public abstract class BaseEntity implements Serializable {
     private Integer id;
 
     @CreatedDate
-    @Column
+    @Column(name = "create_time")
     private LocalDateTime createTime;
 
     @LastModifiedDate
-    @Column
+    @Column(name = "update_time")
     private LocalDateTime updateTime;
 
 }

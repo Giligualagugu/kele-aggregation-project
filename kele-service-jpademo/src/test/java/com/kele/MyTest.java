@@ -6,10 +6,11 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.kele.jpa.demo.DemoJpaApp;
 import com.kele.jpa.demo.dto.GsCompanyDTO;
-import com.kele.jpa.demo.entity.GsCompanyEntity;
-import com.kele.jpa.demo.entity.GsEmployeeEntity;
+import com.kele.jpa.demo.entity.*;
 import com.kele.jpa.demo.repository.GsCompanyRepository;
 import com.kele.jpa.demo.repository.GsEmployeeEntityRepository;
+import com.kele.jpa.demo.repository.RoleRepository;
+import com.kele.jpa.demo.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class MyTest {
     @Autowired
     GsEmployeeEntityRepository employeeEntityRepository;
 
+
+    /**
+     * 无论是双向维护还是单向维护, 编码时 两边都必须显示声明关系 通过 setXXX方法;
+     */
     @Transactional
     @Rollback(false)
     @Test
@@ -51,7 +56,18 @@ public class MyTest {
         employeeEntity2.setAge(13);
         employeeEntity2.setUsername("jack2");
         employeeEntity2.setGsCompanyEntity(entity);
+
         entity.getEmployeeEntitySet().addAll(CollectionUtil.newHashSet(employeeEntity, employeeEntity2));
+
+        GsAddressEntity addressEntity = new GsAddressEntity();
+        addressEntity.setCountry("china");
+        addressEntity.setProvince("jiangsu");
+        addressEntity.setCity("nanjing");
+        addressEntity.setArea("666");
+
+        addressEntity.setCompanyEntity(entity);
+        entity.setAddressEntity(addressEntity);
+
 
         gsCompanyRepository.save(entity);
 
@@ -78,6 +94,27 @@ public class MyTest {
         GsEmployeeEntity gsEmployeeEntity = byId.get();
         gsEmployeeEntity.setUsername("tom233");
         employeeEntityRepository.save(gsEmployeeEntity);
+
+    }
+
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void test5() {
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("michael");
+        userEntity.setPassword("kele1212");
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleDesc("管理员");
+        userEntity.getRoleEntitySet().add(roleEntity);
+
+        userRepository.save(userEntity);
 
     }
 

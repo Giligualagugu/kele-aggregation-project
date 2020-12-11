@@ -18,6 +18,8 @@ public class GsCompanyDTO {
 
     private BigDecimal registerMoney;
 
+    private GsAddressDTO addressDTO;
+
     private Set<GsEmployeeDTO> employeeDTOSet = new HashSet<>();
 
     public static GsCompanyDTO convertFromEntity(GsCompanyEntity entity) {
@@ -29,7 +31,13 @@ public class GsCompanyDTO {
             BeanUtils.copyProperties(e, employeeDTO);
             return employeeDTO;
         }).collect(Collectors.toSet());
+
         dto.setEmployeeDTOSet(collect);
+
+        GsAddressDTO addressDTO = new GsAddressDTO();
+        BeanUtils.copyProperties(entity.getAddressEntity(), addressDTO);
+
+        dto.setAddressDTO(addressDTO);
 
         return dto;
 

@@ -19,8 +19,6 @@ public class GsCompanyEntity extends BaseEntity {
 
     private static final long serialVersionUID = -4594763644308553549L;
 
-
-
     @Column
     private String gsName;
 
@@ -43,5 +41,8 @@ public class GsCompanyEntity extends BaseEntity {
     @OneToMany(mappedBy = "gsCompanyEntity", cascade = CascadeType.ALL)// 放弃从主表维护外键,只声明关系;
     private Set<GsEmployeeEntity> employeeEntitySet = new HashSet<>();
 
+
+    @OneToOne(mappedBy = "companyEntity",cascade = CascadeType.ALL)
+    private GsAddressEntity addressEntity;
 
 }

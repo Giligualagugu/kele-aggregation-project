@@ -10,10 +10,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class GsAddressEntity extends BaseEntity {
+    
     private static final long serialVersionUID = 7765368638804446281L;
 
-
-
+    @Column(name = "gs_id", updatable = false, insertable = false)
     private Integer gsId;
 
     private String country;
@@ -23,4 +23,9 @@ public class GsAddressEntity extends BaseEntity {
     private String city;
 
     private String area;
+
+    @OneToOne(targetEntity = GsCompanyEntity.class)
+    @JoinColumn(name = "gs_id", referencedColumnName = "id")
+    private GsCompanyEntity companyEntity;
+
 }
