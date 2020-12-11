@@ -128,3 +128,5 @@ kele-service-comsummer/target/classes/application.yaml
 kele-service-provider/target/classes/application.yaml
 kele-websocket-borker/target/classes/application.yaml
 kele-websocket-borker/target/classes/statics/
+
+kele-service-jpademo/target

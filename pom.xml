@@ -15,6 +15,7 @@
         <module>kele-websocket-server</module>
         <module>kele-websocket-borker</module>
         <module>kele-service-consul-demo</module>
+        <module>kele-service-jpademo</module>
     </modules>
 
     <parent>
