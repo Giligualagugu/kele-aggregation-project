@@ -1,6 +1,5 @@
-package com.kele.jpa.demo;
+package com.kele.jpa.demo.entity;
 
-import com.kele.jpa.demo.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,10 +19,11 @@ public class GsCompanyEntity extends BaseEntity {
     @Column
     private String gsName;
 
-    @Column
+    @Column(unique = true)// 税号是唯一约束
     private String taxCode;
 
-    @Column(scale = 2, precision = 10)
+    @Column(scale = 2, precision = 10) // 对应数据库 decimal(10,2) 类型;
     private BigDecimal registerMoney;
+
 
 }
