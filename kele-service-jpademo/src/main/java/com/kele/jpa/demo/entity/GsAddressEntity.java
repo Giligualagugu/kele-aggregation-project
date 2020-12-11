@@ -1,18 +1,20 @@
 package com.kele.jpa.demo.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "gs_company_address")
-@Data
+@Table(name = "gs_address_info")
+@Getter
+@Setter
 public class GsAddressEntity extends BaseEntity {
     private static final long serialVersionUID = 7765368638804446281L;
 
+
+
+    private Integer gsId;
 
     private String country;
 

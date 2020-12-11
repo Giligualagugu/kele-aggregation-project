@@ -4,9 +4,9 @@ spring:
   application:
     name: jpademo
   datasource:
-    url: jdbc:mysql://172.23.20.101:5688/yearning?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useServerPrepStmts=true&cachePrepStmts=true
+    url: jdbc:mysql://localhost:3306/dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useServerPrepStmts=true&cachePrepStmts=true
     username: root
-    password: root123456
+    password: kele123456
   jpa:
     database: mysql
     show-sql: true
