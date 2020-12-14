@@ -7,10 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.kele.jpa.demo.DemoJpaApp;
 import com.kele.jpa.demo.dto.GsCompanyDTO;
 import com.kele.jpa.demo.entity.*;
-import com.kele.jpa.demo.repository.GsCompanyRepository;
-import com.kele.jpa.demo.repository.GsEmployeeEntityRepository;
-import com.kele.jpa.demo.repository.RoleRepository;
-import com.kele.jpa.demo.repository.UserRepository;
+import com.kele.jpa.demo.repository.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,11 +73,8 @@ public class MyTest {
 
     @Test
     public void test3() {
-
         List<GsCompanyEntity> all = gsCompanyRepository.findAll();
-
         List<GsCompanyDTO> collect = all.stream().map(GsCompanyDTO::convertFromEntity).collect(Collectors.toList());
-
         System.out.println(JSON.toJSONString(collect, true));
 
     }
@@ -89,12 +83,10 @@ public class MyTest {
     @Rollback(false)
     @Test
     public void test4() {
-
         Optional<GsEmployeeEntity> byId = employeeEntityRepository.findById(1);
         GsEmployeeEntity gsEmployeeEntity = byId.get();
         gsEmployeeEntity.setUsername("tom233");
         employeeEntityRepository.save(gsEmployeeEntity);
-
     }
 
     @Autowired
@@ -115,6 +107,46 @@ public class MyTest {
         userEntity.getRoleEntitySet().add(roleEntity);
 
         userRepository.save(userEntity);
+
+    }
+
+    @Autowired
+    OptimisticLockRepository optimisticLockRepository;
+
+    /**
+     * 乐观锁 test
+     */
+    @Transactional
+    @Rollback(false)
+    @Test
+    public void test6() {
+        OptimisticLockEntity entity = new OptimisticLockEntity();
+        entity.setUsername("kele");
+        entity.setMoneyLeft(BigDecimal.valueOf(100L));
+        optimisticLockRepository.save(entity);
+    }
+
+    /**
+     * 乐观锁 test
+     */
+//    @Transactional
+//    @Rollback(false)
+    @Test
+    public void test7() {
+
+        Optional<OptimisticLockEntity> optional = optimisticLockRepository.findById(1);
+        optional.ifPresent(e -> {
+            e.setMoneyLeft(BigDecimal.valueOf(989));
+//            e.setVersion(22); // 版本不一致 抛出 ObjectOptimisticLockingFailureException
+            optimisticLockRepository.save(e);
+        });
+
+//        Optional<OptimisticLockEntity> optional2 = optimisticLockRepository.findById(1);
+//        optional2.ifPresent(e -> {
+//            e.setMoneyLeft(BigDecimal.valueOf(101));
+//            optimisticLockRepository.save(e);
+//        });
+
 
     }
 

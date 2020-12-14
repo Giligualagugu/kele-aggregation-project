@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -17,8 +16,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Setter
 @Getter
-public abstract class BaseEntity implements Serializable {
-    private static final long serialVersionUID = -7882101870214310257L;
+public abstract class BaseEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
