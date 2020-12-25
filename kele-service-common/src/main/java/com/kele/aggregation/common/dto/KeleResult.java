@@ -39,11 +39,11 @@ public class KeleResult<T> implements Serializable {
     }
 
     public static <T> KeleResult<T> success(T data, String message) {
-        return new KeleResult<>(OK_CODE, message, data);
+        return new KeleResult<T>(OK_CODE, message, data);
     }
 
     public static <T> KeleResult<T> success(T data) {
-        return new KeleResult<>(OK_CODE, OK_MSG, data);
+        return new KeleResult<T>(OK_CODE, OK_MSG, data);
     }
 
 
