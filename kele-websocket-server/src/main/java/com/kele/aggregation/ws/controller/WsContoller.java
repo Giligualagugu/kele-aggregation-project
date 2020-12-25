@@ -58,7 +58,7 @@ public class WsContoller {
             isLock = lock.tryLock();
             if (isLock) {
                 log.info(" 做任务....");
-                TimeUnit.MILLISECONDS.sleep(40_000L);
+                TimeUnit.MILLISECONDS.sleep(10_000L);
                 return KeleResult.success("ok");
             } else {
                 log.info("锁失败...");
@@ -70,7 +70,7 @@ public class WsContoller {
         } finally {
             if (isLock) {
                 log.info("释放锁");
-                lock.unlock();
+//                lock.unlock();
             }
         }
         return KeleResult.fail();
@@ -90,6 +90,7 @@ public class WsContoller {
         } finally {
             lock.unlock();
         }
+
 
         return KeleResult.fail();
     }
