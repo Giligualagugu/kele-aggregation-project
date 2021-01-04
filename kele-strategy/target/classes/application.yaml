@@ -1,0 +1,8 @@
+server:
+  port: 8028
+spring:
+  redis:
+    database: 4
+    host: 172.23.20.101
+    password: 0192023a7bbd73250516f069df18b500
+
