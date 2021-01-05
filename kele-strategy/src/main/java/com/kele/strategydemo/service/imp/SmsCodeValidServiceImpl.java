@@ -22,7 +22,8 @@ public class SmsCodeValidServiceImpl implements SmsCodeValidService {
 
     @Override
     public boolean validCode(EasySignInDTO dto) {
-        log.info("模拟登陆失败:{}", dto);
+        log.info("模拟登陆:{}", dto);
+
         return false;
     }
 
